@@ -11,11 +11,14 @@ The library currently supports setting the time, but not TOU schedules and holid
 #include <ekm.h>
 
 ### meter_open(int connection, struct meter_response * response, u_int64_t serial_number)
-Open the meter and fill in the struct meter_response with parsed data from the meter.
+Open the meter and fill in the struct meter_response with parsed data from the meter.  Only one meter should be open on the RS485 bus at a time.  Call meter_close() at the end of the transaction or before opening another meter.
 
 Takes an open connection to the meter serial port.  The connection can be a socket connected to a TCP-RS485 interface or an serial port. The serial_number selects which meter on the RS485 bus should be opened.
 
 return values: 0 - Bad CRC, 1 - good CRC, any other value indicates a short read.
+
+### meter_close(int connection)
+End the transaction with open meters on the RS485 bus.  The serial port or socket remains open.
 
 ### meter_login(int connection, char * password)
 Login to the meter to allow settings changes.
@@ -30,7 +33,7 @@ Read the meter 6 month Time Of Use history and fill in the struct meter_history.
 return values: 1 - success, 0 - failure
 
 ### scheduleread(int connection, struct meter_schedule * schedule)
-Reads the Time Of Use and holidays schedules and fills in the struct meter_schedule.
+Read the Time Of Use and holidays schedules and fills in the struct meter_schedule.
 
 return values: 1 - success, 0 - failure
 
